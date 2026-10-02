@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OlivaPistacho | Productos Premium de Pistachos y Aceitunas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --olive-dark: #2D4A3E;
+      --olive: #3D6B4F;
+      --olive-light: #5A8F6A;
+      --cream: #F8F5F0;
+      --cream-dark: #EDE8DF;
+      --gold: #C9A227;
+      --gold-light: #E8D48B;
+      --terracotta: #C65D3B;
+      --text: #1F2A24;
+      --text-muted: #5C6B62;
+      --white: #FFFFFF;
+      --shadow: 0 4px 20px rgba(45, 74, 62, 0.12);
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 600; }
+
+    /* LOGIN SCREEN */
+    #login-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, var(--olive-dark) 0%, var(--olive) 50%, #1a2f26 100%);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+    .login-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .login-logo {
+      font-size: 2.4rem;
+      color: var(--olive-dark);
+      margin-bottom: 8px;
+    }
+    .login-logo span { color: var(--gold); }
+    .login-subtitle { color: var(--text-muted); margin-bottom: 32px; font-size: 0.95rem; }
+    .form-group { margin-bottom: 18px; text-align: left; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--olive-dark); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px 16px;
+      border: 2px solid var(--cream-dark);
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border 0.2s;
+      font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--olive);
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 28px;
+      border: none; border-radius: 10px;
+      font-weight: 600; font-size: 1rem;
+      cursor: pointer; transition: all 0.2s;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--olive); color: white;
+      width: 100%;
+    }
+    .btn-primary:hover { background: var(--olive-dark); transform: translateY(-1px); }
+    .btn-gold {
+      background: var(--gold); color: var(--text);
+    }
+    .btn-gold:hover { background: var(--gold-light); }
+    .btn-outline {
+      background: transparent; border: 2px solid var(--olive); color: var(--olive);
+    }
+    .btn-outline:hover { background: var(--olive); color: white; }
+    .btn-sm { padding: 8px 16px; font-size: 0.9rem; }
+    .login-hint {
+      margin-top: 24px; padding: 14px;
+      background: var(--cream);
+      border-radius: 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: left;
+    }
+    .login-error { color: var(--terracotta); font-size: 0.9rem; margin-top: 12px; display: none; }
+
+    /* MAIN APP */
+    #app { display: none; }
+    header {
+      background: var(--olive-dark);
+      color: white;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px;
+    }
+    .logo { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { color: var(--gold-light); }
+    nav { display: flex; gap: 8px; flex-wrap: wrap; }
+    nav a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem; font-weight: 500;
+      transition: all 0.2s;
+    }
+    nav a:hover, nav a.active { background: rgba(255,255,255,0.15); color: white; }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .cart-btn {
+      position: relative;
+      background: rgba(255,255,255,0.12);
+      border: none; color: white;
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      cursor: pointer; font-size: 1.2rem;
+    }
+    .cart-count {
+      position: absolute; top: -6px; right: -6px;
+      background: var(--gold); color: var(--text);
+      font-size: 0.7rem; font-weight: 700;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .user-badge {
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.1);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+    .logout-btn {
+      background: transparent; border: 1px solid rgba(255,255,255,0.3);
+      color: white; padding: 6px 12px; border-radius: 8px;
+      cursor: pointer; font-size: 0.85rem;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.1); }
+
+    /* SECTIONS */
+    main { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px; }
+    section { display: none; animation: fadeIn 0.3s ease; }
+    section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .section-header {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .section-header h2 {
+      font-size: 2.2rem;
+      color: var(--olive-dark);
+      margin-bottom: 8px;
+    }
+    .section-header p { color: var(--text-muted); max-width: 560px; margin: 0 auto; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--olive-dark), var(--olive));
+      border-radius: 20px;
+      padding: 60px 40px;
+      color: white;
+      text-align: center;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero h1 { font-size: 2.8rem; margin-bottom: 12px; position: relative; }
+    .hero p { font-size: 1.15rem; opacity: 0.9; max-width: 500px; margin: 0 auto 28px; position: relative; }
+    .hero .btn { position: relative; }
+
+    /* PRODUCTS GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(45,74,62,0.18); }
+    .card-img {
+      height: 180px;
+      background: linear-gradient(135deg, var(--cream-dark), #d4cfc4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+    }
+    .card-body { padding: 20px; }
+    .card-body h3 { font-size: 1.2rem; margin-bottom: 6px; color: var(--olive-dark); }
+    .card-body .price { font-size: 1.3rem; font-weight: 700; color: var(--olive); margin: 10px 0; }
+    .card-body .desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px; }
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem; font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--cream-dark);
+      color: var(--olive-dark);
+      margin-bottom: 8px;
+    }
+    .badge-service { background: #E8F0EA; color: var(--olive); }
+
+    /* CART */
+    .cart-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .cart-table th, .cart-table td { padding: 16px; text-align: left; border-bottom: 1px solid var(--cream-dark); }
+    .cart-table th { background: var(--olive-dark); color: white; font-weight: 600; }
+    .cart-total { text-align: right; font-size: 1.4rem; font-weight: 700; margin-top: 20px; color: var(--olive-dark); }
+    .qty-btn {
+      width: 28px; height: 28px; border: 1px solid var(--cream-dark);
+      background: white; border-radius: 6px; cursor: pointer; font-weight: 600;
+    }
+
+    /* CHECKOUT */
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    @media (max-width: 768px) { .checkout-grid { grid-template-columns: 1fr; } }
+    .payment-methods {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;
+    }
+    .pay-option {
+      border: 2px solid var(--cream-dark);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      background: white;
+    }
+    .pay-option:hover, .pay-option.selected {
+      border-color: var(--olive);
+      background: #F0F7F2;
+    }
+    .pay-option .icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .pay-option .name { font-weight: 600; font-size: 0.9rem; }
+
+    /* REVIEWS */
+    .review-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    .stars { color: var(--gold); letter-spacing: 2px; margin-bottom: 8px; }
+    .review-meta { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; }
+
+    /* ADMIN */
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .stat-card .value { font-size: 2rem; font-weight: 700; color: var(--olive); }
+    .stat-card .label { font-size: 0.9rem; color: var(--text-muted); margin-top: 4px; }
+    .orders-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); font-size: 0.9rem; }
+    .orders-table th, .orders-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--cream-dark); }
+    .orders-table th { background: var(--olive-dark); color: white; }
+    .status-paid { color: #2e7d32; font-weight: 600; }
+    .income-flow {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-top: 32px;
+    }
+    .income-bar {
+      display: flex; height: 28px; border-radius: 8px; overflow: hidden; margin: 16px 0;
+    }
+    .income-bar div { display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 600; }
+
+    /* TOAST */
+    #toast {
+      position: fixed; bottom: 30px; right: 30px;
+      background: var(--olive-dark); color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      z-index: 10000;
+      display: none;
+      max-width: 360px;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    /* EMPTY STATE */
+    .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .empty .icon { font-size: 3rem; margin-bottom: 12px; }
+
+    footer {
+      background: var(--olive-dark);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 24px;
+      font-size: 0.9rem;
+    }
+    footer strong { color: var(--gold-light); }
+
+    @media (max-width: 640px) {
+      .header-inner { flex-wrap: wrap; }
+      nav { order: 3; width: 100%; justify-content: center; }
+      .hero h1 { font-size: 2rem; }
+      .payment-methods { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Oliva<span>Pistacho</span></div>
+    <p class="login-subtitle">Productos premium del Mediterráneo</p>
+
+    <!-- LOGIN -->
+    <form id="login-form">
+      <div class="form-group">
+        <label for="login-email">Correo o usuario</label>
+        <input type="text" id="login-email" placeholder="tu@email.com" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="login-password">Contraseña</label>
+        <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary">Entrar a la tienda</button>
+      <p class="login-error" id="login-error">Correo o contraseña incorrectos</p>
+      <p style="margin-top:18px;font-size:0.9rem;color:var(--text-muted);">
+        ¿No tienes cuenta?
+        <a href="#" id="show-register" style="color:var(--olive);font-weight:600;text-decoration:none;">Regístrate</a>
+      </p>
+    </form>
+
+    <!-- REGISTER (solo clientes) -->
+    <form id="register-form" style="display:none;">
+      <div class="form-group">
+        <label for="reg-name">Nombre</label>
+        <input type="text" id="reg-name" placeholder="Tu nombre" required>
+      </div>
+      <div class="form-group">
+        <label for="reg-email">Correo electrónico</label>
+        <input type="email" id="reg-email" placeholder="tu@email.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="reg-password">Contraseña</label>
+        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label for="reg-password2">Repetir contraseña</label>
+        <input type="password" id="reg-password2" placeholder="Repite la contraseña" required minlength="6" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn btn-primary">Crear cuenta</button>
+      <p class="login-error" id="register-error">Error al registrarse</p>
+      <p style="margin-top:18px;font-size:0.9rem;color:var(--text-muted);">
+        ¿Ya tienes cuenta?
+        <a href="#" id="show-login" style="color:var(--olive);font-weight:600;text-decoration:none;">Inicia sesión</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="header-inner">
+      <div class="logo">Oliva<span>Pistacho</span></div>
+      <nav>
+        <a href="#" data-section="home" class="active">Inicio</a>
+        <a href="#" data-section="productos">Productos</a>
+        <a href="#" data-section="servicios">Servicios</a>
+        <a href="#" data-section="reseñas">Reseñas</a>
+        <a href="#" data-section="admin" id="nav-admin" style="display:none;">Admin</a>
+      </nav>
+      <div class="header-actions">
+        <button class="cart-btn" id="cart-btn" title="Carrito">🛒<span class="cart-count" id="cart-count">0</span></button>
+        <span class="user-badge" id="user-badge"></span>
+        <button class="logout-btn" id="logout-btn">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section id="home" class="active">
+      <div class="hero">
+        <h1>Del campo a tu mesa</h1>
+        <p>Pistachos y aceitunas de la más alta calidad, cultivados con respeto por la tierra mediterránea. Sabor auténtico, origen garantizado.</p>
+        <button class="btn btn-gold" onclick="showSection('productos')">Ver productos</button>
+      </div>
+
+      <div class="section-header">
+        <h2>Destacados</h2>
+        <p>Nuestros productos más apreciados por clientes y chefs</p>
+      </div>
+      <div class="grid" id="featured-grid"></div>
+    </section>
+
+    <!-- PRODUCTOS -->
+    <section id="productos">
+      <div class="section-header">
+        <h2>Nuestros Productos</h2>
+        <p>Selección premium de pistachos y aceitunas. Origen España y Mediterráneo.</p>
+      </div>
+      <div class="grid" id="productos-grid"></div>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section id="servicios">
+      <div class="section-header">
+        <h2>Servicios</h2>
+        <p>Más allá del producto: experiencia, asesoramiento y venta profesional</p>
+      </div>
+      <div class="grid" id="servicios-grid"></div>
+    </section>
+
+    <!-- CARRITO -->
+    <section id="carrito">
+      <div class="section-header">
+        <h2>Tu carrito</h2>
+      </div>
+      <div id="cart-content"></div>
+    </section>
+
+    <!-- CHECKOUT -->
+    <section id="checkout">
+      <div class="section-header">
+        <h2>Finalizar compra</h2>
+        <p>Elige método de pago y confirma tu pedido</p>
+      </div>
+      <div class="checkout-grid">
+        <div>
+          <h3 style="margin-bottom:16px;color:var(--olive-dark)">Datos de envío</h3>
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" id="ship-name" placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="ship-email" placeholder="tu@email.com">
+          </div>
+          <div class="form-group">
+            <label>Dirección</label>
+            <input type="text" id="ship-address" placeholder="Calle, número, ciudad">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" id="ship-phone" placeholder="+34 600 000 000">
+          </div>
+        </div>
+        <div>
+          <h3 style="margin-bottom:16px;color:var(--olive-dark)">Método de pago</h3>
+          <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:8px">Selecciona una de las 4 pasarelas conectadas:</p>
+          <div class="payment-methods" id="payment-methods">
+            <div class="pay-option" data-method="stripe">
+              <div class="icon">💳</div>
+              <div class="name">Stripe<br><small>Tarjeta real (test/live)</small></div>
+            </div>
+            <div class="pay-option" data-method="tarjeta">
+              <div class="icon">💳</div>
+              <div class="name">Tarjeta demo<br><small>Simulado</small></div>
+            </div>
+            <div class="pay-option" data-method="paypal">
+              <div class="icon">🅿️</div>
+              <div class="name">PayPal<br><small>Simulado</small></div>
+            </div>
+            <div class="pay-option" data-method="bizum">
+              <div class="icon">📱</div>
+              <div class="name">Bizum<br><small>Simulado</small></div>
+            </div>
+          </div>
+          <div id="payment-details" style="margin-top:20px;display:none;">
+            <div class="form-group" id="card-fields" style="display:none;">
+              <label>Número de tarjeta (demo)</label>
+              <input type="text" placeholder="ACCT-000015" maxlength="19">
+              <div style="display:flex;gap:12px;margin-top:10px;">
+                <input type="text" placeholder="MM/AA" style="flex:1">
+                <input type="text" placeholder="CVV" style="flex:1" maxlength="4">
+              </div>
+            </div>
+            <div id="bizum-fields" style="display:none;">
+              <p style="font-size:0.9rem;color:var(--text-muted)">Se enviará una solicitud Bizum a tu número registrado. En esta demo se simula el pago instantáneo.</p>
+            </div>
+            <div id="paypal-fields" style="display:none;">
+              <p style="font-size:0.9rem;color:var(--text-muted)">Serás redirigido a PayPal (simulado). En producción se conecta con la API oficial.</p>
+            </div>
+            <div id="transfer-fields" style="display:none;">
+              <p style="font-size:0.9rem;color:var(--text-muted)">IBAN demo: ES12 3456 7890 1234 5678 9012<br>Concepto: tu número de pedido</p>
+            </div>
+          </div>
+          <div style="margin-top:28px;">
+            <p style="font-size:1.1rem;margin-bottom:12px;">Total a pagar: <strong id="checkout-total">0,00 €</strong></p>
+            <button class="btn btn-primary" id="confirm-pay-btn">Confirmar y pagar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEÑAS -->
+    <section id="reseñas">
+      <div class="section-header">
+        <h2>Reseñas de clientes</h2>
+        <p>Lo que dicen quienes ya han probado nuestros productos</p>
+      </div>
+      <div id="reviews-list"></div>
+      <div style="background:white;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);margin-top:32px;">
+        <h3 style="margin-bottom:16px;color:var(--olive-dark)">Deja tu reseña</h3>
+        <div class="form-group">
+          <label>Tu nombre</label>
+          <input type="text" id="review-name" placeholder="Nombre">
+        </div>
+        <div class="form-group">
+          <label>Valoración</label>
+          <select id="review-stars">
+            <option value="5">★★★★★ Excelente</option>
+            <option value="4">★★★★☆ Muy bueno</option>
+            <option value="3">★★★☆☆ Bueno</option>
+            <option value="2">★★☆☆☆ Regular</option>
+            <option value="1">★☆☆☆☆ Malo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Comentario</label>
+          <textarea id="review-text" rows="3" placeholder="Cuéntanos tu experiencia..."></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:auto;" id="submit-review">Publicar reseña</button>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="admin">
+      <div class="section-header">
+        <h2>Panel de Administración</h2>
+        <p>Cuenta personal · Pasarela de pagos · Solo visible para el Administrador</p>
+      </div>
+
+      <!-- CUENTA PERSONAL (parece real) -->
+      <div style="background:linear-gradient(135deg,#1a2f26,#2D4A3E);border-radius:16px;padding:28px 32px;color:white;margin-bottom:28px;box-shadow:0 8px 30px rgba(45,74,62,0.3);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
+          <div>
+            <div style="font-size:0.85rem;opacity:0.75;letter-spacing:0.5px;">CUENTA PERSONAL · OLIVAPISTACHO</div>
+            <div style="font-size:0.8rem;opacity:0.6;margin-top:4px;">ES91 2100 0418 4502 0005 1332 · Titular: Administrador</div>
+            <div style="font-size:2.6rem;font-weight:700;margin-top:12px;font-family:'Inter',sans-serif;" id="account-balance">1.000,00 €</div>
+            <div style="font-size:0.85rem;opacity:0.7;margin-top:4px;">Saldo disponible</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="background:rgba(255,255,255,0.12);padding:10px 16px;border-radius:10px;font-size:0.85rem;">
+              <div>Ingresos hoy: <strong id="stat-today">0 €</strong></div>
+              <div style="margin-top:4px;">Pedidos: <strong id="stat-orders">0</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-stats">
+        <div class="stat-card">
+          <div class="value" id="stat-revenue" style="color:#2e7d32;">+0 €</div>
+          <div class="label">Total ingresos (ventas)</div>
+        </div>
+        <div class="stat-card">
+          <div class="value" id="stat-expenses" style="color:#c62828;">−0 €</div>
+          <div class="label">Total gastos (materiales)</div>
+        </div>
+        <div class="stat-card">
+          <div class="value" id="stat-avg">0 €</div>
+          <div class="label">Ticket medio</div>
+        </div>
+        <div class="stat-card">
+          <div class="value" id="stat-movements">0</div>
+          <div class="label">Movimientos</div>
+        </div>
+      </div>
+
+      <!-- COMPRAR MATERIALES (baja el saldo) -->
+      <div style="background:white;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:28px;">
+        <h3 style="color:var(--olive-dark);margin-bottom:8px;">🛒 Comprar materiales / gastos</h3>
+        <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:16px;">Al comprar materiales el dinero se resta de tu cuenta personal.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+          <div class="form-group" style="margin:0;flex:1;min-width:160px;">
+            <label>Concepto</label>
+            <input type="text" id="expense-concept" placeholder="Ej: Envases, pistachos a granel...">
+          </div>
+          <div class="form-group" style="margin:0;width:140px;">
+            <label>Importe (€)</label>
+            <input type="number" id="expense-amount" min="0.01" step="0.01" placeholder="0,00">
+          </div>
+          <button class="btn btn-primary" style="width:auto;background:#c62828;" id="btn-expense">Restar de la cuenta</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;">
+          <button class="btn btn-sm btn-outline" onclick="quickExpense('Envases y packaging', 45)">Envases 45 €</button>
+          <button class="btn btn-sm btn-outline" onclick="quickExpense('Pistachos a granel 50 kg', 180)">Pistachos 180 €</button>
+          <button class="btn btn-sm btn-outline" onclick="quickExpense('Aceitunas a granel', 95)">Aceitunas 95 €</button>
+          <button class="btn btn-sm btn-outline" onclick="quickExpense('Transporte / logística', 60)">Transporte 60 €</button>
+        </div>
+      </div>
+
+      <!-- MOVIMIENTOS DE LA CUENTA -->
+      <h3 style="margin-bottom:12px;color:var(--olive-dark)">📋 Movimientos de la cuenta</h3>
+      <div style="overflow-x:auto;margin-bottom:28px;">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Concepto</th>
+              <th>Tipo</th>
+              <th>Importe</th>
+              <th>Saldo tras movimiento</th>
+            </tr>
+          </thead>
+          <tbody id="movements-tbody"></tbody>
+        </table>
+      </div>
+      <div id="no-movements" class="empty" style="display:none;">
+        <div class="icon">💳</div>
+        <p>Aún no hay movimientos. Las ventas y los gastos aparecerán aquí.</p>
+      </div>
+
+      <!-- PEDIDOS -->
+      <h3 style="margin-bottom:16px;color:var(--olive-dark)">Base de datos de pedidos (solo admin)</h3>
+      <div style="overflow-x:auto;">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Productos</th>
+              <th>Método</th>
+              <th>Total</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+      </div>
+      <div id="no-orders" class="empty" style="display:none;">
+        <div class="icon">📦</div>
+        <p>Aún no hay pedidos. Cuando un cliente compre, el dinero entrará en tu cuenta automáticamente.</p>
+      </div>
+
+      <div style="margin-top:32px;background:#FFF8E7;border:1px solid var(--gold);border-radius:var(--radius);padding:20px;">
+        <strong>🔔 Notificaciones</strong>
+        <ul id="notif-list" style="margin-top:12px;padding-left:20px;font-size:0.9rem;"></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>OlivaPistacho</strong> · Productos y servicios de pistachos y olivas · Demo profesional 2025<br>
+    <small>Esta es una demostración frontend. Para producción se requiere backend real, pasarela de pagos certificada y base de datos segura.</small>
+  </footer>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ========== DATA ==========
+const PRODUCTS = [
+  { id: 1, name: "Pistachos tostados salados", price: 8.90, desc: "250 g. Tostados artesanalmente, con un toque de sal marina.", emoji: "🥜", type: "producto", featured: true },
+  { id: 2, name: "Pistachos naturales", price: 9.50, desc: "250 g. Sin sal, crudos. Ideales para snacks saludables.", emoji: "🌰", type: "producto", featured: true },
+  { id: 3, name: "Pistachos premium 1 kg", price: 29.90, desc: "Bolsa familiar. Origen Murcia. Calibre grande.", emoji: "🥜", type: "producto", featured: false },
+  { id: 4, name: "Aceite de oliva virgen extra", price: 14.50, desc: "500 ml. Primera presión en frío. Acidez <0,2%.", emoji: "🫒", type: "producto", featured: true },
+  { id: 5, name: "Aceitunas arbequinas", price: 6.80, desc: "350 g. Variedad arbequina, aliño tradicional.", emoji: "🫒", type: "producto", featured: false },
+  { id: 6, name: "Aceitunas rellenas de anchoa", price: 7.20, desc: "350 g. Rellenas a mano. Sabor intenso.", emoji: "🫒", type: "producto", featured: false },
+  { id: 7, name: "Pack regalo mediterráneo", price: 34.90, desc: "Pistachos + AOVE + aceitunas en caja de regalo.", emoji: "🎁", type: "producto", featured: true },
+  { id: 8, name: "Pasta de pistacho 200 g", price: 11.90, desc: "100% pistacho. Ideal para postres y cocina.", emoji: "🥜", type: "producto", featured: false },
+];
+
+const SERVICES = [
+  { id: 101, name: "Tour por la finca", price: 25.00, desc: "Visita guiada de 2 h + cata de productos. Grupos de hasta 12 personas.", emoji: "🏞️", type: "servicio" },
+  { id: 102, name: "Venta al por mayor", price: 0, desc: "Precios especiales a partir de 20 kg. Contacta para presupuesto personalizado.", emoji: "📦", type: "servicio" },
+  { id: 103, name: "Suscripción mensual", price: 39.90, desc: "Caja sorpresa de pistachos y aceitunas cada mes. Cancela cuando quieras.", emoji: "📅", type: "servicio" },
+  { id: 104, name: "Asesoría agrícola", price: 120.00, desc: "Consulta online de 1 h sobre cultivo de pistacho u olivo.", emoji: "👨‍🌾", type: "servicio" },
+];
+
+const DEFAULT_REVIEWS = [
+  { name: "María G.", stars: 5, text: "Los pistachos más crujientes que he probado. El aceite de oliva es excepcional.", date: "2025-09-12" },
+  { name: "Carlos R.", stars: 5, text: "El pack regalo llegó perfecto. Mi hermana quedó encantada.", date: "2025-08-28" },
+  { name: "Laura M.", stars: 4, text: "Muy buen sabor. El envío fue rápido. Repetiré seguro.", date: "2025-08-15" },
+];
+
+// ========== API / BACKEND ==========
+// Cambia esta URL si tu servidor corre en otro sitio
+const API_URL = 'http://localhost:3001';
+let apiOnline = false;
+
+async function api(path, options = {}) {
+  const res = await fetch(API_URL + path, {
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    ...options
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || res.statusText || 'Error de red');
+  return data;
+}
+
+async function checkApi() {
+  try {
+    const h = await api('/api/health');
+    apiOnline = true;
+    console.log('API conectada', h);
+    return h;
+  } catch (e) {
+    apiOnline = false;
+    console.warn('API no disponible — modo localStorage');
+    return null;
+  }
+}
+
+// ========== STATE ==========
+let currentUser = null;
+let cart = JSON.parse(localStorage.getItem('op_cart') || '[]');
+let orders = JSON.parse(localStorage.getItem('op_orders') || '[]');
+let reviews = JSON.parse(localStorage.getItem('op_reviews') || 'null') || DEFAULT_REVIEWS;
+let notifications = JSON.parse(localStorage.getItem('op_notifs') || '[]');
+let selectedPayment = null;
+
+// Cuenta personal del admin (parece real)
+const INITIAL_BALANCE = 1000;
+function getBalance() {
+  const v = localStorage.getItem('op_balance');
+  return v !== null ? parseFloat(v) : INITIAL_BALANCE;
+}
+function setBalance(amount) {
+  localStorage.setItem('op_balance', amount.toFixed(2));
+}
+function getMovements() {
+  return JSON.parse(localStorage.getItem('op_movements') || '[]');
+}
+function saveMovements(m) {
+  localStorage.setItem('op_movements', JSON.stringify(m));
+}
+function addMovement(type, concept, amount) {
+  // type: 'ingreso' | 'gasto'
+  let balance = getBalance();
+  if (type === 'ingreso') balance += amount;
+  else balance -= amount;
+  setBalance(balance);
+  const movements = getMovements();
+  movements.unshift({
+    date: new Date().toISOString(),
+    type,
+    concept,
+    amount,
+    balanceAfter: balance
+  });
+  saveMovements(movements);
+  return balance;
+}
+
+// Usuarios clientes registrados (email + contraseña reales del usuario)
+function getUsers() {
+  return JSON.parse(localStorage.getItem('op_users') || '[]');
+}
+function saveUsers(users) {
+  localStorage.setItem('op_users', JSON.stringify(users));
+}
+
+// ========== AUTH ==========
+// Admin fijo (no se muestra en pantalla)
+const ADMIN_EMAIL = 'admin';
+const ADMIN_PASS = 'admin123';
+
+// Toggle login / registro
+document.getElementById('show-register').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'block';
+  document.getElementById('login-error').style.display = 'none';
+});
+document.getElementById('show-login').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('register-error').style.display = 'none';
+});
+
+// LOGIN
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pass = document.getElementById('login-password').value;
+  const error = document.getElementById('login-error');
+  error.style.display = 'none';
+
+  // Intentar API primero
+  if (apiOnline) {
+    try {
+      const user = await api('/api/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password: pass })
+      });
+      currentUser = user;
+      localStorage.setItem('op_user', JSON.stringify(currentUser));
+      enterApp();
+      return;
+    } catch (err) {
+      error.textContent = err.message || 'Correo o contraseña incorrectos';
+      error.style.display = 'block';
+      return;
+    }
+  }
+
+  // Fallback local
+  if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
+    currentUser = { email: ADMIN_EMAIL, name: 'Administrador', role: 'admin' };
+    localStorage.setItem('op_user', JSON.stringify(currentUser));
+    enterApp();
+    return;
+  }
+  const users = getUsers();
+  const found = users.find(u => u.email === email && u.password === pass);
+  if (found) {
+    currentUser = { email: found.email, name: found.name, role: 'cliente' };
+    localStorage.setItem('op_user', JSON.stringify(currentUser));
+    enterApp();
+    return;
+  }
+  const emailExists = users.some(u => u.email === email);
+  error.textContent = emailExists
+    ? 'Contraseña incorrecta'
+    : 'No hay cuenta con ese correo. Pulsa «Regístrate» abajo para crear una.';
+  error.style.display = 'block';
+});
+
+// REGISTRO (solo crea cuentas de cliente)
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const pass = document.getElementById('reg-password').value;
+  const pass2 = document.getElementById('reg-password2').value;
+  const error = document.getElementById('register-error');
+  error.style.display = 'none';
+
+  if (pass.length < 6) {
+    error.textContent = 'La contraseña debe tener al menos 6 caracteres';
+    error.style.display = 'block';
+    return;
+  }
+  if (pass !== pass2) {
+    error.textContent = 'Las contraseñas no coinciden';
+    error.style.display = 'block';
+    return;
+  }
+  if (email === ADMIN_EMAIL) {
+    error.textContent = 'Ese correo no está disponible';
+    error.style.display = 'block';
+    return;
+  }
+
+  if (apiOnline) {
+    try {
+      const user = await api('/api/register', {
+        method: 'POST',
+        body: JSON.stringify({ name, email, password: pass })
+      });
+      currentUser = user;
+      localStorage.setItem('op_user', JSON.stringify(currentUser));
+      enterApp();
+      showToast('✅ Cuenta creada. ¡Bienvenido/a, ' + name + '!');
+      return;
+    } catch (err) {
+      error.textContent = err.message;
+      error.style.display = 'block';
+      return;
+    }
+  }
+
+  const users = getUsers();
+  if (users.some(u => u.email === email)) {
+    error.textContent = 'Ya existe una cuenta con ese correo';
+    error.style.display = 'block';
+    return;
+  }
+  users.push({ name, email, password: pass, role: 'cliente' });
+  saveUsers(users);
+  currentUser = { email, name, role: 'cliente' };
+  localStorage.setItem('op_user', JSON.stringify(currentUser));
+  enterApp();
+  showToast('✅ Cuenta creada. ¡Bienvenido/a, ' + name + '!');
+});
+
+function enterApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  // Badge: admin o nombre/email del cliente
+  if (currentUser.role === 'admin') {
+    document.getElementById('user-badge').textContent = '👑 Admin';
+    document.getElementById('nav-admin').style.display = 'inline-block';
+  } else {
+    document.getElementById('user-badge').textContent = '👤 ' + (currentUser.name || currentUser.email);
+    document.getElementById('nav-admin').style.display = 'none';
+  }
+  renderAll();
+  updateCartCount();
+}
+
+// Sesión existente
+const savedUser = localStorage.getItem('op_user');
+if (savedUser) {
+  currentUser = JSON.parse(savedUser);
+  enterApp();
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  localStorage.removeItem('op_user');
+  currentUser = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('nav-admin').style.display = 'none';
+  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-error').style.display = 'none';
+});
+
+// ========== NAV ==========
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection(a.dataset.section);
+  });
+});
+
+function showSection(id) {
+  // Solo el Administrador puede ver la base de datos / panel Admin
+  if (id === 'admin' && currentUser?.role !== 'admin') {
+    showToast('⛔ Acceso denegado. Solo el Administrador puede ver esta sección.');
+    id = 'home';
+  }
+  document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  const sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  const nav = document.querySelector(`nav a[data-section="${id}"]`);
+  if (nav) nav.classList.add('active');
+  if (id === 'carrito') renderCart();
+  if (id === 'checkout') renderCheckout();
+  if (id === 'admin' && currentUser?.role === 'admin') renderAdmin();
+  if (id === 'reseñas') renderReviews();
+}
+
+document.getElementById('cart-btn').addEventListener('click', () => showSection('carrito'));
+
+// ========== RENDER PRODUCTS ==========
+function renderCard(item) {
+  const isService = item.type === 'servicio';
+  const priceText = item.price === 0 ? 'Consultar' : item.price.toFixed(2).replace('.', ',') + ' €';
+  return `
+    <div class="card">
+      <div class="card-img">${item.emoji}</div>
+      <div class="card-body">
+        <span class="badge ${isService ? 'badge-service' : ''}">${isService ? 'Servicio' : 'Producto'}</span>
+        <h3>${item.name}</h3>
+        <p class="desc">${item.desc}</p>
+        <div class="price">${priceText}</div>
+        ${item.price > 0 ? `<button class="btn btn-primary btn-sm" onclick="addToCart(${item.id})">Añadir al carrito</button>` : `<button class="btn btn-outline btn-sm" onclick="alert('Contacta con nosotros para un presupuesto personalizado.')">Solicitar info</button>`}
+      </div>
+    </div>
+  `;
+}
+
+function renderAll() {
+  document.getElementById('featured-grid').innerHTML = PRODUCTS.filter(p => p.featured).map(renderCard).join('');
+  document.getElementById('productos-grid').innerHTML = PRODUCTS.map(renderCard).join('');
+  document.getElementById('servicios-grid').innerHTML = SERVICES.map(renderCard).join('');
+}
+
+// ========== CART ==========
+function addToCart(id) {
+  const all = [...PRODUCTS, ...SERVICES];
+  const item = all.find(p => p.id === id);
+  if (!item || item.price === 0) return;
+  const existing = cart.find(c => c.id === id);
+  if (existing) existing.qty++;
+  else cart.push({ id: item.id, name: item.name, price: item.price, qty: 1, emoji: item.emoji });
+  saveCart();
+  updateCartCount();
+  showToast(`✅ ${item.name} añadido al carrito`);
+}
+
+function saveCart() {
+  localStorage.setItem('op_cart', JSON.stringify(cart));
+}
+
+function updateCartCount() {
+  const total = cart.reduce((s, c) => s + c.qty, 0);
+  document.getElementById('cart-count').textContent = total;
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
+  saveCart();
+  updateCartCount();
+  renderCart();
+}
+
+function renderCart() {
+  const el = document.getElementById('cart-content');
+  if (cart.length === 0) {
+    el.innerHTML = `<div class="empty"><div class="icon">🛒</div><p>Tu carrito está vacío</p><button class="btn btn-primary" style="margin-top:16px;width:auto;" onclick="showSection('productos')">Ver productos</button></div>`;
+    return;
+  }
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  el.innerHTML = `
+    <table class="cart-table">
+      <thead><tr><th>Producto</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th></th></tr></thead>
+      <tbody>
+        ${cart.map(c => `
+          <tr>
+            <td>${c.emoji} ${c.name}</td>
+            <td>${c.price.toFixed(2).replace('.', ',')} €</td>
+            <td>
+              <button class="qty-btn" onclick="changeQty(${c.id}, -1)">−</button>
+              <span style="margin:0 8px;">${c.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${c.id}, 1)">+</button>
+            </td>
+            <td>${(c.price * c.qty).toFixed(2).replace('.', ',')} €</td>
+            <td><button class="btn btn-sm" style="background:#fee;color:#c00;" onclick="changeQty(${c.id}, -999)">✕</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    <div class="cart-total">Total: ${total.toFixed(2).replace('.', ',')} €</div>
+    <div style="text-align:right;margin-top:20px;">
+      <button class="btn btn-primary" style="width:auto;" onclick="showSection('checkout')">Proceder al pago →</button>
+    </div>
+  `;
+}
+
+// ========== CHECKOUT ==========
+function renderCheckout() {
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  document.getElementById('checkout-total').textContent = total.toFixed(2).replace('.', ',') + ' €';
+  if (cart.length === 0) {
+    showSection('carrito');
+    return;
+  }
+  // Prefill con datos del cliente logueado
+  if (currentUser && currentUser.role === 'cliente') {
+    if (!document.getElementById('ship-name').value && currentUser.name) {
+      document.getElementById('ship-name').value = currentUser.name;
+    }
+    if (!document.getElementById('ship-email').value && currentUser.email) {
+      document.getElementById('ship-email').value = currentUser.email;
+    }
+  }
+}
+
+document.querySelectorAll('.pay-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    selectedPayment = opt.dataset.method;
+    document.getElementById('payment-details').style.display = 'block';
+    ['card-fields', 'bizum-fields', 'paypal-fields', 'transfer-fields'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    if (selectedPayment === 'tarjeta') document.getElementById('card-fields').style.display = 'block';
+    if (selectedPayment === 'bizum') document.getElementById('bizum-fields').style.display = 'block';
+    if (selectedPayment === 'paypal') document.getElementById('paypal-fields').style.display = 'block';
+    if (selectedPayment === 'transferencia') document.getElementById('transfer-fields').style.display = 'block';
+    if (selectedPayment === 'stripe') {
+      document.getElementById('payment-details').style.display = 'block';
+      // Reuse paypal message area conceptually - inject note
+      const pd = document.getElementById('payment-details');
+      let note = document.getElementById('stripe-fields');
+      if (!note) {
+        note = document.createElement('div');
+        note.id = 'stripe-fields';
+        note.innerHTML = '<p style="font-size:0.9rem;color:var(--text-muted)">Serás redirigido a la pasarela segura de <strong>Stripe</strong>. En modo test usa la tarjeta 4242 4242 4242 4242.</p>';
+        pd.appendChild(note);
+      }
+      note.style.display = 'block';
+    } else {
+      const note = document.getElementById('stripe-fields');
+      if (note) note.style.display = 'none';
+    }
+  });
+});
+
+document.getElementById('confirm-pay-btn').addEventListener('click', async () => {
+  if (!selectedPayment) {
+    showToast('⚠️ Selecciona un método de pago');
+    return;
+  }
+  const name = document.getElementById('ship-name').value.trim();
+  const email = document.getElementById('ship-email').value.trim();
+  if (!name || !email) {
+    showToast('⚠️ Completa nombre y email');
+    return;
+  }
+  if (cart.length === 0) return;
+
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+
+  // ===== STRIPE REAL =====
+  if (selectedPayment === 'stripe') {
+    if (!apiOnline) {
+      showToast('⚠️ Servidor no conectado. Arranca el backend (npm start en /server) para pagar con Stripe.');
+      return;
+    }
+    try {
+      showToast('Redirigiendo a Stripe...');
+      const data = await api('/api/create-checkout-session', {
+        method: 'POST',
+        body: JSON.stringify({
+          items: cart.map(c => ({ name: c.name, price: c.price, quantity: c.qty })),
+          customerEmail: email,
+          customerName: name,
+          address: document.getElementById('ship-address').value,
+          phone: document.getElementById('ship-phone').value
+        })
+      });
+      cart = [];
+      saveCart();
+      updateCartCount();
+      window.location.href = data.url; // Página de pago de Stripe
+      return;
+    } catch (err) {
+      showToast('Error Stripe: ' + err.message);
+      return;
+    }
+  }
+
+  // ===== PAGO SIMULADO (demo) o API sin Stripe =====
+  const orderId = 'OP-' + Date.now().toString().slice(-8);
+  const orderPayload = {
+    id: orderId,
+    date: new Date().toISOString(),
+    customer: name,
+    email,
+    address: document.getElementById('ship-address').value,
+    phone: document.getElementById('ship-phone').value,
+    items: [...cart],
+    method: selectedPayment,
+    total,
+    status: 'Pagado'
+  };
+
+  if (apiOnline) {
+    try {
+      await api('/api/orders', {
+        method: 'POST',
+        body: JSON.stringify({
+          customer: name,
+          email,
+          address: orderPayload.address,
+          phone: orderPayload.phone,
+          items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price })),
+          method: selectedPayment,
+          total
+        })
+      });
+      showToast('🎉 Pedido enviado a la base de datos del admin\\n+' + total.toFixed(2) + ' €');
+    } catch (err) {
+      showToast('Error al guardar pedido: ' + err.message);
+      return;
+    }
+  } else {
+    orders.unshift(orderPayload);
+    localStorage.setItem('op_orders', JSON.stringify(orders));
+    const newBal = addMovement('ingreso', `Venta ${orderId} · ${name} · ${selectedPayment.toUpperCase()}`, total);
+    const notif = {
+      time: new Date().toLocaleString('es-ES'),
+      msg: `💰 +${total.toFixed(2)} € en tu cuenta (Pedido ${orderId} de ${name}). Saldo: ${newBal.toFixed(2)} €`
+    };
+    notifications.unshift(notif);
+    if (notifications.length > 20) notifications.pop();
+    localStorage.setItem('op_notifs', JSON.stringify(notifications));
+    showToast(`🎉 ¡Pago realizado con éxito!\\nPedido ${orderId}\\n+${total.toFixed(2)} € (modo local)`);
+  }
+
+  cart = [];
+  saveCart();
+  updateCartCount();
+  selectedPayment = null;
+  document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('payment-details').style.display = 'none';
+  document.getElementById('ship-name').value = '';
+  document.getElementById('ship-email').value = '';
+  document.getElementById('ship-address').value = '';
+  document.getElementById('ship-phone').value = '';
+  setTimeout(() => showSection('home'), 1800);
+});
+
+// ========== REVIEWS ==========
+function renderReviews() {
+  const list = document.getElementById('reviews-list');
+  list.innerHTML = reviews.map(r => `
+    <div class="review-card">
+      <div class="stars">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+      <p>${r.text}</p>
+      <div class="review-meta">${r.name} · ${r.date}</div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('submit-review').addEventListener('click', () => {
+  const name = document.getElementById('review-name').value.trim() || 'Anónimo';
+  const stars = parseInt(document.getElementById('review-stars').value);
+  const text = document.getElementById('review-text').value.trim();
+  if (!text) {
+    showToast('⚠️ Escribe un comentario');
+    return;
+  }
+  reviews.unshift({
+    name,
+    stars,
+    text,
+    date: new Date().toISOString().slice(0, 10)
+  });
+  localStorage.setItem('op_reviews', JSON.stringify(reviews));
+  document.getElementById('review-name').value = '';
+  document.getElementById('review-text').value = '';
+  renderReviews();
+  showToast('✅ Reseña publicada. ¡Gracias!');
+});
+
+// ========== ADMIN ==========
+function formatEuro(n) {
+  return n.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' €';
+}
+
+async function renderAdmin() {
+  if (currentUser?.role !== 'admin') return;
+
+  // Cargar datos del servidor si está online
+  if (apiOnline) {
+    try {
+      const acc = await api('/api/account');
+      const serverOrders = await api('/api/orders');
+      orders = serverOrders;
+      notifications = acc.notifications || [];
+      // Sincronizar balance local con el del servidor
+      localStorage.setItem('op_balance', String(acc.balance));
+      localStorage.setItem('op_movements', JSON.stringify(acc.movements || []));
+    } catch (e) {
+      console.warn('No se pudo cargar admin desde API', e);
+    }
+  }
+
+  const balance = getBalance();
+  const movements = getMovements();
+  const totalRevenue = orders.reduce((s, o) => s + o.total, 0);
+  const totalExpenses = movements.filter(m => m.type === 'gasto').reduce((s, m) => s + m.amount, 0);
+  const today = new Date().toISOString().slice(0, 10);
+  const todayRevenue = orders.filter(o => o.date.startsWith(today)).reduce((s, o) => s + o.total, 0);
+  const avg = orders.length ? totalRevenue / orders.length : 0;
+
+  document.getElementById('account-balance').textContent = formatEuro(balance);
+  document.getElementById('stat-orders').textContent = orders.length;
+  document.getElementById('stat-revenue').textContent = '+' + formatEuro(totalRevenue);
+  document.getElementById('stat-expenses').textContent = '−' + formatEuro(totalExpenses);
+  document.getElementById('stat-today').textContent = formatEuro(todayRevenue);
+  document.getElementById('stat-avg').textContent = formatEuro(avg);
+  document.getElementById('stat-movements').textContent = movements.length;
+
+  // Movimientos
+  const movBody = document.getElementById('movements-tbody');
+  const noMov = document.getElementById('no-movements');
+  if (movements.length === 0) {
+    movBody.innerHTML = '';
+    noMov.style.display = 'block';
+  } else {
+    noMov.style.display = 'none';
+    movBody.innerHTML = movements.map(m => `
+      <tr>
+        <td>${new Date(m.date).toLocaleString('es-ES')}</td>
+        <td>${m.concept}</td>
+        <td style="color:${m.type === 'ingreso' ? '#2e7d32' : '#c62828'};font-weight:600;">
+          ${m.type === 'ingreso' ? '↑ Ingreso' : '↓ Gasto'}
+        </td>
+        <td style="color:${m.type === 'ingreso' ? '#2e7d32' : '#c62828'};font-weight:700;">
+          ${m.type === 'ingreso' ? '+' : '−'}${formatEuro(m.amount)}
+        </td>
+        <td>${formatEuro(m.balanceAfter)}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Pedidos
+  const tbody = document.getElementById('orders-tbody');
+  const noOrders = document.getElementById('no-orders');
+  if (orders.length === 0) {
+    tbody.innerHTML = '';
+    noOrders.style.display = 'block';
+  } else {
+    noOrders.style.display = 'none';
+    tbody.innerHTML = orders.map(o => `
+      <tr>
+        <td><strong>${o.id}</strong></td>
+        <td>${new Date(o.date).toLocaleString('es-ES')}</td>
+        <td>${o.customer}<br><small>${o.email}</small></td>
+        <td>${o.items.map(i => `${i.qty}× ${i.name}`).join('<br>')}</td>
+        <td>${o.method}</td>
+        <td><strong>${o.total.toFixed(2).replace('.', ',')} €</strong></td>
+        <td class="status-paid">${o.status}</td>
+      </tr>
+    `).join('');
+  }
+
+  const notifList = document.getElementById('notif-list');
+  notifList.innerHTML = notifications.length
+    ? notifications.map(n => `<li style="margin-bottom:6px;"><strong>${n.time}</strong> — ${n.msg}</li>`).join('')
+    : '<li>Sin notificaciones todavía</li>';
+}
+
+// Gastos / comprar materiales
+async function doExpense(concept, amount) {
+  if (!concept || !amount || amount <= 0) {
+    showToast('⚠️ Indica concepto e importe válidos');
+    return;
+  }
+  if (apiOnline) {
+    try {
+      const r = await api('/api/expenses', {
+        method: 'POST',
+        body: JSON.stringify({ concept, amount })
+      });
+      localStorage.setItem('op_balance', String(r.balance));
+      showToast(`OK −${amount.toFixed(2)} € restados. Nuevo saldo: ${r.balance.toFixed(2)} €`);
+      renderAdmin();
+      return;
+    } catch (err) {
+      showToast(err.message);
+      return;
+    }
+  }
+  const balance = getBalance();
+  if (amount > balance) {
+    showToast('⚠️ Saldo insuficiente en la cuenta');
+    return;
+  }
+  const newBal = addMovement('gasto', concept, amount);
+  notifications.unshift({
+    time: new Date().toLocaleString('es-ES'),
+    msg: `📉 −${amount.toFixed(2)} € · ${concept}. Saldo: ${newBal.toFixed(2)} €`
+  });
+  localStorage.setItem('op_notifs', JSON.stringify(notifications));
+  showToast(`OK −${amount.toFixed(2)} € restados. Nuevo saldo: ${newBal.toFixed(2)} €`);
+  renderAdmin();
+}
+
+function quickExpense(concept, amount) {
+  doExpense(concept, amount);
+}
+
+document.getElementById('btn-expense').addEventListener('click', () => {
+  const concept = document.getElementById('expense-concept').value.trim() || 'Gasto de materiales';
+  const amount = parseFloat(document.getElementById('expense-amount').value);
+  doExpense(concept, amount);
+  document.getElementById('expense-concept').value = '';
+  document.getElementById('expense-amount').value = '';
+});
+
+// ========== TOAST ==========
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 4000);
+}
+
+// Initial
+renderAll();
+checkApi().then(async (h) => {
+  // Vuelta de Stripe
+  const params = new URLSearchParams(location.search);
+  if (params.get('pago') === 'ok' && params.get('session_id') && apiOnline) {
+    try {
+      await api('/api/checkout-session/' + params.get('session_id'));
+      showToast('✅ Pago Stripe confirmado. El pedido ya está en el panel Admin.');
+    } catch (e) {
+      showToast('Pago recibido. Revisa el panel Admin.');
+    }
+    history.replaceState({}, '', location.pathname);
+  } else if (params.get('pago') === 'cancelado') {
+    showToast('Pago cancelado');
+    history.replaceState({}, '', location.pathname);
+  }
+});
+</script>
+</body>
+</html>
